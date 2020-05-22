@@ -26,4 +26,9 @@ public final class EnvConfiguration {
         BeeEnvironment.setGlobalException(consumer);
         return this;
     }
+
+    public EnvConfiguration location(String location) {
+        BeeEnvironment.setLocation(location);
+        return this;
+    }
 }

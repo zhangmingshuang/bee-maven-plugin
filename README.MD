@@ -98,7 +98,7 @@ BeeApplication.stepPrepositionRegister()
 ```
 
 ## 异步处理
-### 方法
+### 方法异常
 ```java
 BeeBasisController
     .registerAuthority()
@@ -111,10 +111,16 @@ BeeBasisController
     .asserts()
     .isTrue(x -> x.getSuccess());
 ```
-### 全局
+### 全局异常
 ```java
  BeeApplication.configuration()
     .globalException(e -> e.printStackTrace());
+```
+
+## 动态修改请求地址
+```java
+ BeeApplication.configuration()
+    .location("http://xxxx");
 ```
 
 ## JSON配置处理
