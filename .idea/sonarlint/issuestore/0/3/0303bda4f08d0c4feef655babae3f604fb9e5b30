@@ -1,0 +1,11 @@
+
+M
+java:S1481"+Remove this unused "beeXml" local variable.(Ú–Ø«úÿÿÿÿ8î¨õ„£.
+c
+java:S1117ˆ"@Rename "mavenProject" which hides the field declared at line 95.(¶±»§ûÿÿÿÿ8³‚º„£.
+b
+java:S1117|"@Rename "mavenProject" which hides the field declared at line 95.(¶±»§ûÿÿÿÿ8î¨õ„£.
+O
+java:S1602®",Remove useless curly braces around statement(…å–áúÿÿÿÿ8ªÕá„£.
+u
+java:S3776Ð"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(×®•Òøÿÿÿÿ8¯¥î„£.
