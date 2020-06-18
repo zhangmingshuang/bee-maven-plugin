@@ -2,3 +2,4 @@
 *.iml
 
 target/
+/bee-test/src/test/java/

@@ -1,4 +1,4 @@
-# BEE MAVEN 插件
+i# BEE MAVEN 插件
 用来扫描特定的类生产对应的可匹配调用的接口信息。
 （注：代码很乱...还没时间整理...）
 
@@ -7,33 +7,19 @@
 <plugin>
     <groupId>com.nascent.maven.plugin</groupId>
     <artifactId>bee-maven-plugin</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <executions>
         <execution>
             <goals>
-                <goal>junit</goal>
+                <goal>bee</goal>
             </goals>
         </execution>
     </executions>
-    <configuration>
-        <!-- 配置接口请求地址 -->
-        <location>http://localhost:9091</location>
-        <models>
-            <!-- 配置项目的模块依赖 -->
-            <model>../ecrp-saas-open-platform-base</model>
-            <model>../../ecrp-saas-common</model>
-            <model>../../ecrp-saas-outside/ecrp-saas-outside-api</model>
-            <model>../ecrp-saas-open-platform-model</model>
-            <model>../ecrp-saas-open-platform-service</model>
-            <model>../ecrp-saas-open-platform-web</model>
-            <model>../../ecrp-saas-core/ecrp-saas-core-model</model>
-        </models>
-    </configuration>
 </plugin>
 ```
 
 # 使用
-运行`mvn bee:junit`，默认会在项目的测试目录下生成对应的测试依赖代码。
+运行`mvn bee:bee`，默认会在项目的测试目录下生成对应的测试依赖代码。
 
 # 配置说明
 ## 参数动态附值
@@ -97,7 +83,7 @@ BeeApplication.stepPrepositionRegister()
 //BeeApplication.globalRequestParamRegister().onParam("accessToken",d.getResult());
 ```
 
-## 异步处理
+## 异常处理
 ### 方法异常
 ```java
 BeeBasisController
@@ -123,6 +109,29 @@ BeeBasisController
     .location("http://xxxx");
 ```
 
+```java
+BeeApplication.configuration()
+    .location()
+    .locationBuilder(new Builder() {
+        //地址构建
+        @Override
+        public String build(String location, Class clazz, Method method) {
+            PostMapping annotation = method.getAnnotation(PostMapping.class);
+            if (annotation != null) {
+                String[] path = annotation.value();
+                if (path == null || path.length < 1) {
+                    path = annotation.path();
+                }
+                if (path != null && path.length > 0) {
+                    return location;
+                }
+                return location + "/" + method.getName();
+            }
+            return location;
+        }
+    });
+```
+
 ## JSON配置处理
 ### 设置Date格式化
 ```java
@@ -132,14 +141,13 @@ BeeApplication.configuration()
 
 ## 关于测试
 ### 测试懒加载
-公司开发框架中，会加载所有的类，并进行初始化。该情况会导致测试中的静态初始化模块
-被执行而导致异常。
+公司开发框架中，会加载所有的类，并进行初始化。
+该情况会导致测试中的静态初始化模块被执行而导致异常。
 
 ### 解析方式
 进行类的懒初始化加载
 ```
 //测试基础类示例
-@Ignore
 public class BasicTest {
 
     public static final String GROUP_NAME = "研发二部4";
