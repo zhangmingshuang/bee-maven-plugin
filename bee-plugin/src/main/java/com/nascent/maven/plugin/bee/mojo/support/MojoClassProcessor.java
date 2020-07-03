@@ -83,11 +83,13 @@ public class MojoClassProcessor {
         if (APPENDED_CLASS_PATHS.contains(jarKey)) {
             return;
         }
+
         String scope = dependency.getScope();
         String groupId = dependency.getGroupId();
         String artifactId = dependency.getArtifactId();
         String version = dependency.getVersion();
         String type = dependency.getType();
+
         if (!Config.COMPILE.equals(scope)
             && !StringUtils.isEmpty(scope)) {
             MojoContexts.getLogger().debug("notCompileScope:"
@@ -102,17 +104,20 @@ public class MojoClassProcessor {
         String folder = groupId.replace(".", File.separator);
         Path jarFile = Paths.get(basedir, folder,
             artifactId, version, artifactId + "-" + version + "." + type);
+
         if (ArtifactUtils.isSnapshot(dependency.getVersion())) {
             Param<Path> param = this.getSnapshotJar(jarKey, jarFile);
             jarKey = param.getKey();
             jarFile = param.getValue();
         }
+
         if (Files.notExists(jarFile)) {
             MojoContexts.getLogger().debug("dependencySkip: "
                 + groupId + ":" + artifactId + ":" + version + " not exists.");
             //如果Jar包不存在，则可能是项目下的模块
             return;
         }
+
         APPENDED_CLASS_PATHS.add(jarKey);
         this.appendClassPath(jarKey, jarFile);
     }
@@ -141,14 +146,17 @@ public class MojoClassProcessor {
     private void appendClassPath(String jarKey, Path jarFile) {
         String jar = jarFile.toString();
         try {
+            if (jar.endsWith("-sources.jar")) {
+                jar = jar.replace("-sources.jar", ".jar");
+            }
             CLASS_POOL.appendClassPath(jar);
             if (!StringUtils.isEmpty(printDependency)
                 && PATH_MATCHER.match(printDependency, jarKey)) {
-                MojoContexts.getLogger().info("appendClassPath:" + jarKey + ">" + jar);
+                MojoContexts.getLogger().info("appendClassPath:" + jarKey + " > " + jar);
             }
-            MojoContexts.getLogger().debug("appendClassPath:" + jarKey + ">" + jar);
+            MojoContexts.getLogger().debug("appendClassPath:" + jarKey + " > " + jar);
         } catch (NotFoundException e) {
-            MojoContexts.getLogger().debug("appendClassPathNotFound:" + jarKey + ">" + jar);
+            MojoContexts.getLogger().debug("appendClassPathNotFound:" + jarKey + " > " + jar);
         }
     }
 
