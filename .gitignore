@@ -3,3 +3,4 @@
 
 target/
 /bee-test/src/test/java/
+.flattened-pom.xml
