@@ -13,7 +13,7 @@
     <artifactId>bee-test</artifactId>
     <properties>
         <dom4j.version>1.6.1</dom4j.version>
-        <springversion>5.0.6.RELEASE</springversion>
+        <springversion>5.2.1.RELEASE</springversion>
     </properties>
 
     <dependencies>
@@ -25,11 +25,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
