@@ -16,5 +16,5 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class BeeParentDependency extends BeeDependency {
 
-    private String relativePath = "../pom.xml";
+  private String relativePath = "../pom.xml";
 }

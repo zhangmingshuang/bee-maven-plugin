@@ -13,21 +13,20 @@ import org.apache.maven.model.Build;
  */
 public class MojoBuild implements Context {
 
-    @Delegate
-    private Build build;
+  @Delegate private Build build;
 
-    protected static MojoBuild newInstance(Build build) {
-        return new MojoBuild(build);
-    }
+  private MojoBuild(Build build) {
+    this.build = build;
+  }
 
-    private MojoBuild(Build build) {
-        this.build = build;
-    }
+  protected static MojoBuild newInstance(Build build) {
+    return new MojoBuild(build);
+  }
 
-    public String packageToPath(String packageName) {
-        if (StringUtils.isEmpty(packageName)) {
-            return "";
-        }
-        return packageName.replace(".", "/");
+  public String packageToPath(String packageName) {
+    if (StringUtils.isEmpty(packageName)) {
+      return "";
     }
+    return packageName.replace(".", "/");
+  }
 }

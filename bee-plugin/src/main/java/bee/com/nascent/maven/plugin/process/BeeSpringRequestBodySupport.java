@@ -9,10 +9,10 @@ package bee.com.nascent.maven.plugin.process;
  */
 public interface BeeSpringRequestBodySupport {
 
-    /**
-     * 标注为RequestBody
-     *
-     * @return
-     */
-    BeeHttpRequestSupport toRequestBody();
+  /**
+   * 标注为RequestBody
+   *
+   * @return
+   */
+  BeeHttpRequestSupport toRequestBody();
 }

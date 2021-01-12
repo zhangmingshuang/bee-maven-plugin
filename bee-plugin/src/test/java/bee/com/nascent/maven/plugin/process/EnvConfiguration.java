@@ -14,62 +14,61 @@ import java.util.function.Consumer;
  */
 public final class EnvConfiguration {
 
-    public static final HttpConfiguration HTTP = new HttpConfiguration();
-    public static final EnvConfiguration ENV_CONFIGURATION = new EnvConfiguration();
+  public static final HttpConfiguration HTTP = new HttpConfiguration();
+  public static final EnvConfiguration ENV_CONFIGURATION = new EnvConfiguration();
 
-    public static class HttpConfiguration {
+  public EnvConfiguration jsonParser(JsonParser jsonParser) {
+    __BeeEnvironment.setJsonParser(jsonParser);
+    return this;
+  }
 
-        public HttpConfiguration connectionTimeout(int connectTimeout) {
-            __BeeEnvironment.Http.connectionTimeOut(connectTimeout);
-            return this;
-        }
+  public JsonParser getJsonParser() {
+    return __BeeEnvironment.getJsonParser();
+  }
 
-        public HttpConfiguration readTimeout(int readTimeout) {
-            __BeeEnvironment.Http.readTimeout(readTimeout);
-            return this;
-        }
+  public EnvConfiguration globalException(Consumer<Throwable> consumer) {
+    __BeeEnvironment.setGlobalException(consumer);
+    return this;
+  }
 
-        public EnvConfiguration andThen() {
-            return EnvConfiguration.ENV_CONFIGURATION;
-        }
+  public EnvConfiguration location(String location) {
+    __BeeEnvironment.setLocation(location);
+    return this;
+  }
+
+  public HttpConfiguration http() {
+    return EnvConfiguration.HTTP;
+  }
+
+  public static interface JsonConfiguration {
+
+    default JsonConfiguration dateFormat(String pattern) {
+      return this.dateFormat(new SimpleDateFormat(pattern));
     }
 
-    public static interface JsonConfiguration {
+    JsonConfiguration dateFormat(DateFormat dateFormat);
 
-        default JsonConfiguration dateFormat(String pattern) {
-            return this.dateFormat(new SimpleDateFormat(pattern));
-        }
+    JsonConfiguration ignoreOnUnknownProperties();
 
-        JsonConfiguration dateFormat(DateFormat dateFormat);
+    default EnvConfiguration andThen() {
+      return EnvConfiguration.ENV_CONFIGURATION;
+    }
+  }
 
-        JsonConfiguration ignoreOnUnknownProperties();
+  public static class HttpConfiguration {
 
-        default EnvConfiguration andThen() {
-            return EnvConfiguration.ENV_CONFIGURATION;
-        }
+    public HttpConfiguration connectionTimeout(int connectTimeout) {
+      __BeeEnvironment.Http.connectionTimeOut(connectTimeout);
+      return this;
     }
 
-
-    public EnvConfiguration jsonParser(JsonParser jsonParser) {
-        __BeeEnvironment.setJsonParser(jsonParser);
-        return this;
+    public HttpConfiguration readTimeout(int readTimeout) {
+      __BeeEnvironment.Http.readTimeout(readTimeout);
+      return this;
     }
 
-    public JsonParser getJsonParser() {
-        return __BeeEnvironment.getJsonParser();
+    public EnvConfiguration andThen() {
+      return EnvConfiguration.ENV_CONFIGURATION;
     }
-
-    public EnvConfiguration globalException(Consumer<Throwable> consumer) {
-        __BeeEnvironment.setGlobalException(consumer);
-        return this;
-    }
-
-    public EnvConfiguration location(String location) {
-        __BeeEnvironment.setLocation(location);
-        return this;
-    }
-
-    public HttpConfiguration http() {
-        return EnvConfiguration.HTTP;
-    }
+  }
 }

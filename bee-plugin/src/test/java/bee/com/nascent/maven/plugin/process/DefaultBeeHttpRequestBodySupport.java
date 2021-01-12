@@ -14,74 +14,71 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultBeeHttpRequestBodySupport<T> implements BeeHttpRequestBodySupport<T> {
 
-    private String requestUri;
-    /**
-     * 方法 Get/Post
-     */
-    private String method;
-    private Map requestParams;
-    private T body;
-    private Class<T> clazz;
+  private String requestUri;
+  /** 方法 Get/Post */
+  private String method;
 
-    public DefaultBeeHttpRequestBodySupport(Class<T> clazz) {
-        this.clazz = clazz;
+  private Map requestParams;
+  private T body;
+  private Class<T> clazz;
+
+  public DefaultBeeHttpRequestBodySupport(Class<T> clazz) {
+    this.clazz = clazz;
+  }
+
+  public DefaultBeeHttpRequestBodySupport() {}
+
+  @Override
+  public String method() {
+    return method;
+  }
+
+  public DefaultBeeHttpRequestBodySupport<T> fromString(String str) {
+    if (!StringUtils.isEmpty(str)) {
+      body = __BeeEnvironment.getJsonParser().readValue(str, clazz);
     }
+    return this;
+  }
 
-    public DefaultBeeHttpRequestBodySupport() {
+  @Override
+  public BeeAsserts<T> asserts() {
+    return new BeeJunitAsserts(body);
+  }
 
-    }
+  @Override
+  public T body() {
+    return this.body;
+  }
 
-    @Override
-    public String method() {
-        return method;
-    }
+  public BeeHttpRequestBodySupport fromBody(T body) {
+    this.body = body;
+    return this;
+  }
 
-    public DefaultBeeHttpRequestBodySupport<T> fromString(String str) {
-        if (!StringUtils.isEmpty(str)) {
-            body = __BeeEnvironment.getJsonParser().readValue(str, clazz);
-        }
-        return this;
-    }
+  public BeeHttpRequestBodySupport requestParams(Map requestParams) {
+    this.requestParams = requestParams;
+    return this;
+  }
 
-    @Override
-    public BeeAsserts<T> asserts() {
-        return new BeeJunitAsserts(body);
-    }
+  @Override
+  public Map requestParams() {
+    return requestParams;
+  }
 
-    @Override
-    public T body() {
-        return this.body;
-    }
+  @Override
+  public String requestUrl() {
+    return requestUri;
+  }
 
-    public BeeHttpRequestBodySupport fromBody(T body) {
-        this.body = body;
-        return this;
-    }
+  public DefaultBeeHttpRequestBodySupport onPost(String requestUri) {
+    this.requestUri = requestUri;
+    this.method = "POST";
+    return this;
+  }
 
-    public BeeHttpRequestBodySupport requestParams(Map requestParams) {
-        this.requestParams = requestParams;
-        return this;
-    }
-
-    @Override
-    public Map requestParams() {
-        return requestParams;
-    }
-
-    @Override
-    public String requestUrl() {
-        return requestUri;
-    }
-
-    public DefaultBeeHttpRequestBodySupport onPost(String requestUri) {
-        this.requestUri = requestUri;
-        this.method = "POST";
-        return this;
-    }
-
-    public DefaultBeeHttpRequestBodySupport onGet(String requestUri) {
-        this.requestUri = requestUri;
-        this.method = "GET";
-        return this;
-    }
+  public DefaultBeeHttpRequestBodySupport onGet(String requestUri) {
+    this.requestUri = requestUri;
+    this.method = "GET";
+    return this;
+  }
 }

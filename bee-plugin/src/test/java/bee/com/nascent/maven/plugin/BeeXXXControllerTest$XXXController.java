@@ -5,22 +5,22 @@ import bee.com.nascent.maven.plugin.process.AbstractBeeMethodDelegate;
 import bee.com.nascent.maven.plugin.process.DataAddition;
 import bee.com.nascent.maven.plugin.process.__BeeEnvironment;
 import com.nascent.maven.plugin.bee.mojo.XXXControllerTest;
-import java.lang.Class;
-import java.lang.String;
 import java.util.Optional;
 
 /**
  * bee auto build. at 2020-06-11T18:54:45.044
+ *
  * @see com.nascent.maven.plugin.bee.mojo.XXXControllerTest$XXXController
  */
 public class BeeXXXControllerTest$XXXController {
   /**
-   * @see com.nascent.maven.plugin.bee.mojo.XXXControllerTest$XXXController#isJoinedActivity
-   * arthas: trace com.nascent.maven.plugin.bee.mojo.XXXControllerTest$XXXController isJoinedActivity
+   * @see com.nascent.maven.plugin.bee.mojo.XXXControllerTest$XXXController#isJoinedActivity arthas:
+   *     trace com.nascent.maven.plugin.bee.mojo.XXXControllerTest$XXXController isJoinedActivity
    */
   public static IsJoinedActivityDelegate isJoinedActivity() {
-    String uri = Optional.ofNullable(__BeeEnvironment.getLocation()).orElse("http://192.168.10.163:9091");
-    return new IsJoinedActivityDelegate(uri+"//x");
+    String uri =
+        Optional.ofNullable(__BeeEnvironment.getLocation()).orElse("http://192.168.10.163:9091");
+    return new IsJoinedActivityDelegate(uri + "//x");
   }
 
   public static class IsJoinedActivityDelegate extends AbstractBeeMethodDelegate {
@@ -43,17 +43,17 @@ public class BeeXXXControllerTest$XXXController {
     }
 
     public IsJoinedActivityArgs<T> groupId(String groupId) {
-      super._bee_add_Reqest_Params("groupId",groupId);
+      super._bee_add_Reqest_Params("groupId", groupId);
       return this;
     }
 
     public IsJoinedActivityArgs<T> nick(String nick) {
-      super._bee_add_Reqest_Params("nick",nick);
+      super._bee_add_Reqest_Params("nick", nick);
       return this;
     }
 
     public IsJoinedActivityArgs<T> activityGuid(String activityGuid) {
-      super._bee_add_Reqest_Params("activityGuid",activityGuid);
+      super._bee_add_Reqest_Params("activityGuid", activityGuid);
       return this;
     }
   }

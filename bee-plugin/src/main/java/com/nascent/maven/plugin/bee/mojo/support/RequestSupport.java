@@ -12,36 +12,36 @@ import javassist.CtMethod;
  */
 public interface RequestSupport {
 
-    /**
-     * 是否存在请求地址映射
-     *
-     * @param clazz 实体
-     * @return
-     */
-    boolean hasMapping(CtClass clazz);
+  /**
+   * 是否存在请求地址映射
+   *
+   * @param clazz 实体
+   * @return
+   */
+  boolean hasMapping(CtClass clazz);
 
-    /**
-     * 是否有RequestBody
-     *
-     * @param annotations
-     * @return
-     */
-    boolean hasRequestBody(Object[][] annotations);
+  /**
+   * 是否有RequestBody
+   *
+   * @param annotations
+   * @return
+   */
+  boolean hasRequestBody(Object[][] annotations);
 
-    /**
-     * 是否有RequestBody
-     *
-     * @param annotations
-     * @return
-     */
-    boolean hasRequestBody(Object[] annotations);
+  /**
+   * 是否有RequestBody
+   *
+   * @param annotations
+   * @return
+   */
+  boolean hasRequestBody(Object[] annotations);
 
-    /**
-     * 获取请求映射地址
-     *
-     * @param aClass 实体
-     * @param method 方法
-     * @return
-     */
-    String getMapping(CtClass aClass, CtMethod method);
+  /**
+   * 获取请求映射地址
+   *
+   * @param aClass 实体
+   * @param method 方法
+   * @return
+   */
+  String getMapping(CtClass aClass, CtMethod method);
 }

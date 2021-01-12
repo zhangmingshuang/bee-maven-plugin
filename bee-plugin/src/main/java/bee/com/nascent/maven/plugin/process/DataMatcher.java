@@ -9,12 +9,12 @@ package bee.com.nascent.maven.plugin.process;
  */
 public interface DataMatcher<T> {
 
-    /**
-     * 匹配器
-     *
-     * @param a 值A
-     * @param b 值B
-     * @return 值A与值B是否相等
-     */
-    boolean match(T a, T b);
+  /**
+   * 匹配器
+   *
+   * @param a 值A
+   * @param b 值B
+   * @return 值A与值B是否相等
+   */
+  boolean match(T a, T b);
 }

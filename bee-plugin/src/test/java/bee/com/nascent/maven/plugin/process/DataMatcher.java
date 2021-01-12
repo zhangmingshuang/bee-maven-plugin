@@ -9,5 +9,5 @@ package bee.com.nascent.maven.plugin.process;
  */
 public interface DataMatcher<T> {
 
-    boolean match(T a, T b);
+  boolean match(T a, T b);
 }

@@ -9,5 +9,5 @@ package bee.com.nascent.maven.plugin.process;
  */
 public interface BeeSpringRequestBodySupport {
 
-    BeeHttpRequestSupport toRequestBody();
+  BeeHttpRequestSupport toRequestBody();
 }

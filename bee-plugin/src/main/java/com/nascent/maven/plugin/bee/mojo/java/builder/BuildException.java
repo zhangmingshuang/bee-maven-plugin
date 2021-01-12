@@ -12,12 +12,12 @@ import lombok.Getter;
 @Getter
 public class BuildException extends Exception {
 
-    private String className;
-    private String methodName;
+  private String className;
+  private String methodName;
 
-    public BuildException(String className, String methodName, Throwable e) {
-        super(e);
-        this.className = className;
-        this.methodName = methodName;
-    }
+  public BuildException(String className, String methodName, Throwable e) {
+    super(e);
+    this.className = className;
+    this.methodName = methodName;
+  }
 }

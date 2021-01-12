@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/Employee")
 public class Test2Controller {
 
-    @PostMapping
-    public String test() {
-        return "s";
-    }
+  @PostMapping
+  public String test() {
+    return "s";
+  }
 }

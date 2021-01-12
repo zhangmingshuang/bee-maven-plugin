@@ -7,6 +7,4 @@ package com.nascent.maven.plugin.bee.mojo.support;
  * @version 1.0.0
  * @date 2020/6/16
  */
-public class MojoScanner {
-
-}
+public class MojoScanner {}

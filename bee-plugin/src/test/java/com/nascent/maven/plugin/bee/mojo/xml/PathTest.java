@@ -13,10 +13,10 @@ import org.junit.Test;
  */
 public class PathTest {
 
-    @Test
-    public void test() {
-        Path path = Paths.get("/test/ab/ab");
-        System.out.println(path);
-        System.out.println(path.resolve("/ab/ab/cde").toString());
-    }
+  @Test
+  public void test() {
+    Path path = Paths.get("/test/ab/ab");
+    System.out.println(path);
+    System.out.println(path.resolve("/ab/ab/cde").toString());
+  }
 }

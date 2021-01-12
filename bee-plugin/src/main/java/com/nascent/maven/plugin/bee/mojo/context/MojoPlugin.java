@@ -1,7 +1,6 @@
 package com.nascent.maven.plugin.bee.mojo.context;
 
 import bee.com.nascent.maven.plugin.BeeApplication;
-import bee.com.nascent.maven.plugin.process.__BeeEnvironment;
 import com.nascent.maven.plugin.bee.constant.Config;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -18,51 +17,51 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
  */
 public class MojoPlugin implements Context {
 
-    private PluginDescriptor pluginDescriptor;
-    private Map<String, String> pluginProperties
-        = new HashMap<>(2, 1);
+  private PluginDescriptor pluginDescriptor;
+  private Map<String, String> pluginProperties = new HashMap<>(2, 1);
 
-    protected static MojoPlugin newInstance(PluginDescriptor pluginDescriptor) {
-        return new MojoPlugin(pluginDescriptor);
-    }
+  private MojoPlugin(PluginDescriptor pluginDescriptor) {
+    this.pluginDescriptor = pluginDescriptor;
+    this.init();
+  }
 
-    private MojoPlugin(PluginDescriptor pluginDescriptor) {
-        this.pluginDescriptor = pluginDescriptor;
-        this.init();
-    }
+  protected static MojoPlugin newInstance(PluginDescriptor pluginDescriptor) {
+    return new MojoPlugin(pluginDescriptor);
+  }
 
-    public Map<String, String> getPluginProperties() {
-        return new HashMap<>(pluginProperties);
-    }
+  public Map<String, String> getPluginProperties() {
+    return new HashMap<>(pluginProperties);
+  }
 
-    public void addPluginProperties(String key, String value) {
-        this.pluginProperties.put(key, value);
-    }
+  public void addPluginProperties(String key, String value) {
+    this.pluginProperties.put(key, value);
+  }
 
-    public String getJarFileResource() {
-        return pluginDescriptor.getSource();
-    }
+  public String getJarFileResource() {
+    return pluginDescriptor.getSource();
+  }
 
-    public String getResourcetPackageName() {
-        return BeeApplication.class.getPackage().getName();
-    }
+  public String getResourcetPackageName() {
+    return BeeApplication.class.getPackage().getName();
+  }
 
-    private void init() {
-        //初始化
-        this.doPropertiesLoad();
-    }
+  private void init() {
+    // 初始化
+    this.doPropertiesLoad();
+  }
 
-    private void doPropertiesLoad() {
-        //扫描本身属性配置
-        try (InputStream is = MojoContexts.class.getResourceAsStream(Config.PROPERTIES)) {
-            Properties properties = new Properties();
-            properties.load(is);
-            if (!properties.isEmpty()) {
-                properties.stringPropertyNames().forEach(key
-                    -> pluginProperties.put(key, properties.getProperty(key)));
-            }
-        } catch (Throwable e) {
-            MojoContexts.getLogger().errorAndExit(e);
-        }
+  private void doPropertiesLoad() {
+    // 扫描本身属性配置
+    try (InputStream is = MojoContexts.class.getResourceAsStream(Config.PROPERTIES)) {
+      Properties properties = new Properties();
+      properties.load(is);
+      if (!properties.isEmpty()) {
+        properties
+            .stringPropertyNames()
+            .forEach(key -> pluginProperties.put(key, properties.getProperty(key)));
+      }
+    } catch (Throwable e) {
+      MojoContexts.getLogger().errorAndExit(e);
     }
+  }
 }

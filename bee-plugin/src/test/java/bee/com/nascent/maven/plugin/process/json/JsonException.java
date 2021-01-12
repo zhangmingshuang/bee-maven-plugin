@@ -9,11 +9,11 @@ package bee.com.nascent.maven.plugin.process.json;
  */
 public class JsonException extends RuntimeException {
 
-    public JsonException(Throwable e) {
-        super(e);
-    }
+  public JsonException(Throwable e) {
+    super(e);
+  }
 
-    public JsonException(String message) {
-        super(message);
-    }
+  public JsonException(String message) {
+    super(message);
+  }
 }

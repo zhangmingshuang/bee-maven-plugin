@@ -10,7 +10,7 @@ package bee.com.nascent.maven.plugin.process;
 @SuppressWarnings("java:S100")
 public interface DataAddition {
 
-    String _bee_Mapping_url();
+  String _bee_Mapping_url();
 
-    Class _bee_Return_Type_Class();
+  Class _bee_Return_Type_Class();
 }

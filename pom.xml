@@ -1,112 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>bee</artifactId>
 
-    <groupId>com.nascent.maven.plugin</groupId>
-    <artifactId>bee</artifactId>
-    <version>${version}</version>
-    <packaging>pom</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <optimize>true</optimize>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <skip>true</skip>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.6.1</version>
+      </plugin>
 
-    <properties>
-        <beeProject.build.sourceEncoding>UTF-8</beeProject.build.sourceEncoding>
-        <version>1.2.0-SNAPSHOT</version>
-        <java.version>1.8</java.version>
-    </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.2.7.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <modules>
-        <module>bee-plugin</module>
-        <module>bee-test</module>
-        <module>dependency</module>
-    </modules>
-
-    <distributionManagement>
-        <repository>
-            <id>maven-207</id>
-            <name>nascent-cloud</name>
-            <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>maven-207</id>
-            <name>nascent-cloud1</name>
-            <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
-        </repository>
-
-        <repository>
-            <id>aliyun</id>
-            <name>aliyun Maven</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
-
+      <plugin>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <configuration>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+          <updatePomFile>true</updatePomFile>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+          </execution>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+          </execution>
+        </executions>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.1.0</version>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <artifactId>lombok</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <version>1.18.12</version>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-        </dependency>
+      <dependency>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>2.2.7.RELEASE</version>
+      </dependency>
     </dependencies>
+  </dependencyManagement>
+  <distributionManagement>
+    <repository>
+      <id>maven-207</id>
+      <name>nascent-cloud</name>
+      <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
+    </repository>
+  </distributionManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
-                    <optimize>true</optimize>
-                    <showDeprecation>true</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
+  <groupId>com.nascent.maven.plugin</groupId>
 
+  <modelVersion>4.0.0</modelVersion>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <modules>
+    <module>bee-plugin</module>
+    <module>bee-test</module>
+    <module>dependency</module>
+  </modules>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <beeProject.build.sourceEncoding>UTF-8</beeProject.build.sourceEncoding>
+    <java.version>1.8</java.version>
+    <version>1.2.0-SNAPSHOT</version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>maven-207</id>
+      <name>nascent-cloud1</name>
+      <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
+    </repository>
+
+    <repository>
+      <id>aliyun</id>
+      <name>aliyun Maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <version>${version}</version>
 
 </project>

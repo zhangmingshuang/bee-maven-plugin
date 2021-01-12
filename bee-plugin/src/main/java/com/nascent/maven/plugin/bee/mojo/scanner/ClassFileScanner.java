@@ -20,27 +20,28 @@ import java.util.List;
  */
 public class ClassFileScanner implements Scanner {
 
-    public static final String CLASS_SUFFIX = ".class";
+  public static final String CLASS_SUFFIX = ".class";
 
-    @Override
-    public List<Path> scan(Path folder) throws IOException {
-        List<Path> paths = new ArrayList<>();
-        try {
-            Files.walkFileTree(folder,
-                new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
-                        throws IOException {
-                        if (path.getFileName().toString().endsWith(CLASS_SUFFIX)) {
-                            paths.add(path);
-                        }
-                        return super.visitFile(path, attrs);
-                    }
-                });
-        } catch (NoSuchFileException e) {
-            MojoContexts.getLogger().error("class files not found. may be should rebuild project?");
-            MojoContexts.getLogger().errorAndExit(e);
-        }
-        return paths;
+  @Override
+  public List<Path> scan(Path folder) throws IOException {
+    List<Path> paths = new ArrayList<>();
+    try {
+      Files.walkFileTree(
+          folder,
+          new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
+                throws IOException {
+              if (path.getFileName().toString().endsWith(CLASS_SUFFIX)) {
+                paths.add(path);
+              }
+              return super.visitFile(path, attrs);
+            }
+          });
+    } catch (NoSuchFileException e) {
+      MojoContexts.getLogger().error("class files not found. may be should rebuild project?");
+      MojoContexts.getLogger().errorAndExit(e);
     }
+    return paths;
+  }
 }

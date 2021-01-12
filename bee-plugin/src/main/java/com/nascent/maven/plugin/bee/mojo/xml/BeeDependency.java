@@ -17,12 +17,11 @@ import lombok.ToString;
 @ToString
 public class BeeDependency {
 
-    private String groupId;
-    private String artifactId;
-    private String version;
-    private String type;
-    private String scope;
-    private String optional;
-    private List<BeeExclusion> exclusions;
-
+  private String groupId;
+  private String artifactId;
+  private String version;
+  private String type;
+  private String scope;
+  private String optional;
+  private List<BeeExclusion> exclusions;
 }

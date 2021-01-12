@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class TestController {
 
-    @RequestMapping("/1")
-    public String t1(String param1, Integer param2) {
-        return "t1";
-    }
+  @RequestMapping("/1")
+  public String t1(String param1, Integer param2) {
+    return "t1";
+  }
 
-    @PostMapping("/t2")
-    public String t2(int a) {
-        return "i2";
-    }
+  @PostMapping("/t2")
+  public String t2(int a) {
+    return "i2";
+  }
 
-    @PostMapping
-    public String t3(String a, long b) {
-        return "i3";
-    }
+  @PostMapping
+  public String t3(String a, long b) {
+    return "i3";
+  }
 }

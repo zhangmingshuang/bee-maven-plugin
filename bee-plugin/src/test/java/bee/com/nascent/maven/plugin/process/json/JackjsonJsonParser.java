@@ -21,87 +21,89 @@ import java.util.Map;
  */
 public class JackjsonJsonParser implements JsonParser, JsonConfiguration {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Override
-    public JsonConfiguration configuration() {
-        return this;
+  @Override
+  public JsonConfiguration configuration() {
+    return this;
+  }
+
+  @Override
+  public JsonConfiguration dateFormat(DateFormat dateFormat) {
+    objectMapper.setDateFormat(dateFormat);
+    return this;
+  }
+
+  @Override
+  public JsonConfiguration ignoreOnUnknownProperties() {
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    return this;
+  }
+
+  @Override
+  public <T> T writeValueAsString(T body, Class<T> clazz) {
+    try {
+      if (body.getClass().equals(clazz)) {
+        return body;
+      }
+      String json = objectMapper.writeValueAsString(body);
+      return objectMapper.readValue(json, clazz);
+    } catch (IOException e) {
+      throw new JsonException(e);
     }
+  }
 
-    @Override
-    public JsonConfiguration dateFormat(DateFormat dateFormat) {
-        objectMapper.setDateFormat(dateFormat);
-        return this;
+  @Override
+  public <T> T readValue(String data, Type type) {
+    try {
+      JavaType javaType = TypeFactory.defaultInstance().constructType(type);
+      return objectMapper.readValue(data, javaType);
+    } catch (IOException e) {
+      throw new JsonException(e);
     }
+  }
 
-    @Override
-    public JsonConfiguration ignoreOnUnknownProperties() {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return this;
+  @Override
+  public <T> String writeValueAsString(T body) {
+    try {
+      return objectMapper.writeValueAsString(body);
+    } catch (IOException e) {
+      throw new JsonException(e);
     }
+  }
 
-    @Override
-    public <T> T writeValueAsString(T body, Class<T> clazz) {
-        try {
-            if (body.getClass().equals(clazz)) {
-                return body;
-            }
-            String json = objectMapper.writeValueAsString(body);
-            return objectMapper.readValue(json, clazz);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
+  @Override
+  public <T> byte[] writeValueAsByte(T body) {
+    try {
+      return objectMapper.writeValueAsBytes(body);
+    } catch (IOException e) {
+      throw new JsonException(e);
     }
+  }
 
-    @Override
-    public <T> T readValue(String data, Type type) {
-        try {
-            JavaType javaType = TypeFactory.defaultInstance().constructType(type);
-            return objectMapper.readValue(data, javaType);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
-    }
-
-    @Override
-    public <T> String writeValueAsString(T body) {
-        try {
-            return objectMapper.writeValueAsString(body);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
-    }
-
-    @Override
-    public <T> byte[] writeValueAsByte(T body) {
-        try {
-            return objectMapper.writeValueAsBytes(body);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
-    }
-
-    @Override
-    public <T> Map<String, Object> writeValueAsMap(T data) {
-        try {
-            JsonNode jsonNode = objectMapper.readTree(this.writeValueAsString(data));
-            Map<String, Object> params = new HashMap<>();
-            jsonNode.fields().forEachRemaining(entry -> {
+  @Override
+  public <T> Map<String, Object> writeValueAsMap(T data) {
+    try {
+      JsonNode jsonNode = objectMapper.readTree(this.writeValueAsString(data));
+      Map<String, Object> params = new HashMap<>();
+      jsonNode
+          .fields()
+          .forEachRemaining(
+              entry -> {
                 JsonNode value = entry.getValue();
                 Object strValue;
                 if (value.isNull()) {
-                    strValue = null;
+                  strValue = null;
                 } else if (value.isTextual()) {
-                    strValue = value.textValue();
+                  strValue = value.textValue();
                 } else {
-                    strValue = value;
+                  strValue = value;
                 }
                 params.put(entry.getKey(), strValue);
-            });
-            return params;
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
+              });
+      return params;
+    } catch (IOException e) {
+      throw new JsonException(e);
     }
-
+  }
 }

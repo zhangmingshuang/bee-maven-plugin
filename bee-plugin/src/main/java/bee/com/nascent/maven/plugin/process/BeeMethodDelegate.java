@@ -9,10 +9,10 @@ package bee.com.nascent.maven.plugin.process;
  */
 public interface BeeMethodDelegate {
 
-    /**
-     * 参数配置
-     *
-     * @return
-     */
-    BeeMethodArgs args();
+  /**
+   * 参数配置
+   *
+   * @return
+   */
+  BeeMethodArgs args();
 }

@@ -16,6 +16,6 @@ import lombok.ToString;
 @ToString
 public class BeeExclusion {
 
-    private String groupId;
-    private String artifactId;
+  private String groupId;
+  private String artifactId;
 }

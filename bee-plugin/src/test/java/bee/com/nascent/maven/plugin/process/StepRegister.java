@@ -11,11 +11,11 @@ import bee.com.nascent.maven.plugin.BeeAsserts;
  */
 public interface StepRegister {
 
-    <T> StepBodySupport<T> register(bee.com.nascent.maven.plugin.BeeAsserts<T> asserts);
+  <T> StepBodySupport<T> register(bee.com.nascent.maven.plugin.BeeAsserts<T> asserts);
 
-    <T> StepBodySupport<T> register(BeeHttpRequestBodySupport<T> support);
+  <T> StepBodySupport<T> register(BeeHttpRequestBodySupport<T> support);
 
-//    String getValue(String key);
+  //    String getValue(String key);
 
-    <T> StepBodySupport<T> andThen(BeeAsserts<T> asserts);
+  <T> StepBodySupport<T> andThen(BeeAsserts<T> asserts);
 }

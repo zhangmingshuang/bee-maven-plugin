@@ -13,12 +13,12 @@ import java.util.List;
  */
 public interface Scanner {
 
-    /**
-     * Scan Files.
-     *
-     * @param folder Scan Folder
-     * @return the files in the folder and subdirectory.
-     * @throws IOException
-     */
-    List<Path> scan(Path folder) throws IOException;
+  /**
+   * Scan Files.
+   *
+   * @param folder Scan Folder
+   * @return the files in the folder and subdirectory.
+   * @throws IOException
+   */
+  List<Path> scan(Path folder) throws IOException;
 }

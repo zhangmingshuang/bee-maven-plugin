@@ -13,13 +13,13 @@ import org.springframework.util.AntPathMatcher;
  */
 public class AntTest {
 
-    @Test
-    public void test() {
-        AntPathMatcher antPathMatcher = new AntPathMatcher();
-        boolean match = antPathMatcher.match(
-            "project/properties/*",
-            "project/properties/project.build.sourceEncoding");
-        System.out.println(match);
-        Assert.assertTrue(match);
-    }
+  @Test
+  public void test() {
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
+    boolean match =
+        antPathMatcher.match(
+            "project/properties/*", "project/properties/project.build.sourceEncoding");
+    System.out.println(match);
+    Assert.assertTrue(match);
+  }
 }

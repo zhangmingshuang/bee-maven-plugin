@@ -6,18 +6,12 @@ package com.nascent.maven.plugin.bee.utils;
  * @author zhangmsh
  */
 public enum PlatformEnum {
-    /**
-     * Microsoft Windows
-     */
-    WINDOWS,
-    /**
-     * A flavor of Linux
-     */
-    LINUX,
-    /**
-     * macOS (OS X)
-     */
-    MACOSX,
+  /** Microsoft Windows */
+  WINDOWS,
+  /** A flavor of Linux */
+  LINUX,
+  /** macOS (OS X) */
+  MACOSX,
 
-    UNKNOWN;
+  UNKNOWN;
 }

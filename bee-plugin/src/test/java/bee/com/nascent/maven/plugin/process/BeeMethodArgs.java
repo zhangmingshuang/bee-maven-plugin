@@ -7,6 +7,4 @@ package bee.com.nascent.maven.plugin.process;
  * @version 1.0.0
  * @date 2020/5/15
  */
-public interface BeeMethodArgs {
-
-}
+public interface BeeMethodArgs {}

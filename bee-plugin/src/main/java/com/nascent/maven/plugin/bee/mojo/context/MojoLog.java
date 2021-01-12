@@ -12,19 +12,18 @@ import org.apache.maven.plugin.logging.Log;
  */
 public class MojoLog implements Context {
 
-    @Delegate
-    private Log log;
+  @Delegate private Log log;
 
-    protected static MojoLog newInstance(Log log) {
-        return new MojoLog(log);
-    }
+  private MojoLog(Log log) {
+    this.log = log;
+  }
 
-    private MojoLog(Log log) {
-        this.log = log;
-    }
+  protected static MojoLog newInstance(Log log) {
+    return new MojoLog(log);
+  }
 
-    public void errorAndExit(Throwable e) {
-        this.error(e);
-        System.exit(0);
-    }
+  public void errorAndExit(Throwable e) {
+    this.error(e);
+    System.exit(0);
+  }
 }

@@ -9,7 +9,7 @@ package bee.com.nascent.maven.plugin.process;
  */
 public class BeeRequestBodyException extends RuntimeException {
 
-    public BeeRequestBodyException(String message) {
-        super(message);
-    }
+  public BeeRequestBodyException(String message) {
+    super(message);
+  }
 }

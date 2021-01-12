@@ -13,10 +13,10 @@ import org.junit.Test;
  */
 public class EqTest {
 
-    @Test
-    public void test() {
-        int i = 1;
-        Integer ie = 1;
-        Assert.assertTrue(Objects.equals(i, ie));
-    }
+  @Test
+  public void test() {
+    int i = 1;
+    Integer ie = 1;
+    Assert.assertTrue(Objects.equals(i, ie));
+  }
 }

@@ -11,6 +11,4 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @date 2020/6/16
  */
 @Mojo(name = "bee")
-public class BeeMojo extends AbstractBeeMojo {
-
-}
+public class BeeMojo extends AbstractBeeMojo {}

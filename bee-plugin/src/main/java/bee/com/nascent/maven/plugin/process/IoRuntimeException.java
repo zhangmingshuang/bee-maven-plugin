@@ -11,11 +11,11 @@ import java.io.IOException;
  */
 public class IoRuntimeException extends RuntimeException {
 
-    public IoRuntimeException(String message) {
-        super(message);
-    }
+  public IoRuntimeException(String message) {
+    super(message);
+  }
 
-    public IoRuntimeException(IOException e) {
-        super(e);
-    }
+  public IoRuntimeException(IOException e) {
+    super(e);
+  }
 }

@@ -11,32 +11,32 @@ import java.util.function.Consumer;
  */
 public interface BeeApplication {
 
-    static StepRegister stepPrepositionRegister() {
-        return new DefaultStepRegister();
-    }
+  static StepRegister stepPrepositionRegister() {
+    return new DefaultStepRegister();
+  }
 
-    static ParamRegister globalRequestParamRegister() {
-        return new DefaultParamRegister();
-    }
+  static ParamRegister globalRequestParamRegister() {
+    return new DefaultParamRegister();
+  }
 
-    /**
-     * 配置
-     *
-     * @return
-     * @since 1.1.1
-     */
-    static EnvConfiguration configuration() {
-        return EnvConfiguration.ENV_CONFIGURATION;
-    }
+  /**
+   * 配置
+   *
+   * @return
+   * @since 1.1.1
+   */
+  static EnvConfiguration configuration() {
+    return EnvConfiguration.ENV_CONFIGURATION;
+  }
 
-    /**
-     * @param consumer
-     * @return
-     * @since 1.1.0
-     * @deprecated 建议使用 {@link #configuration()}进行设置
-     */
-    @Deprecated
-    static EnvConfiguration globalException(Consumer<Throwable> consumer) {
-        return EnvConfiguration.ENV_CONFIGURATION.globalException(consumer);
-    }
+  /**
+   * @param consumer
+   * @return
+   * @since 1.1.0
+   * @deprecated 建议使用 {@link #configuration()}进行设置
+   */
+  @Deprecated
+  static EnvConfiguration globalException(Consumer<Throwable> consumer) {
+    return EnvConfiguration.ENV_CONFIGURATION.globalException(consumer);
+  }
 }

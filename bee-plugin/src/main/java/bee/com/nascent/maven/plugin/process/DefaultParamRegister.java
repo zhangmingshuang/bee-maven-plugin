@@ -13,27 +13,27 @@ import java.util.function.Supplier;
  */
 public class DefaultParamRegister implements ParamRegister {
 
-    @Override
-    public ParamRegister onParam(String keyName, Supplier<String> valueSupplier, boolean required) {
-        __BeeEnvironment.getDataProvider().addData(keyName, valueSupplier);
-        if (required) {
-            __BeeEnvironment.getDataProvider().addRequiredParam(keyName);
-        }
-        return this;
+  @Override
+  public ParamRegister onParam(String keyName, Supplier<String> valueSupplier, boolean required) {
+    __BeeEnvironment.getDataProvider().addData(keyName, valueSupplier);
+    if (required) {
+      __BeeEnvironment.getDataProvider().addRequiredParam(keyName);
     }
+    return this;
+  }
 
-    @Override
-    public ParamRegister onParam(String keyName, String value, boolean required) {
-        __BeeEnvironment.getDataProvider().addData(keyName, value);
-        if (required) {
-            __BeeEnvironment.getDataProvider().addRequiredParam(keyName);
-        }
-        return this;
+  @Override
+  public ParamRegister onParam(String keyName, String value, boolean required) {
+    __BeeEnvironment.getDataProvider().addData(keyName, value);
+    if (required) {
+      __BeeEnvironment.getDataProvider().addRequiredParam(keyName);
     }
+    return this;
+  }
 
-    @Override
-    public ParamRegister sign(String signKeyName, Function<Map<String, String>, String> fun) {
-        __BeeEnvironment.getSignature().config(signKeyName, fun);
-        return this;
-    }
+  @Override
+  public ParamRegister sign(String signKeyName, Function<Map<String, String>, String> fun) {
+    __BeeEnvironment.getSignature().config(signKeyName, fun);
+    return this;
+  }
 }

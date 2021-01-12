@@ -12,29 +12,29 @@ import java.util.function.Function;
  */
 public interface StepBodySupport<T> {
 
-    /**
-     * 注册一个键值对
-     *
-     * @param fun
-     * @return
-     */
-    default StepRegister onData(Function<T, Param> fun) {
-        return this.onData(fun, false);
-    }
+  /**
+   * 注册一个键值对
+   *
+   * @param fun
+   * @return
+   */
+  default StepRegister onData(Function<T, Param> fun) {
+    return this.onData(fun, false);
+  }
 
-    default StepRegister onRequriedData(Function<T, Param> fun) {
-        return this.onData(fun, true);
-    }
+  default StepRegister onRequriedData(Function<T, Param> fun) {
+    return this.onData(fun, true);
+  }
 
-    StepRegister onData(Function<T, Param> fun, boolean required);
+  StepRegister onData(Function<T, Param> fun, boolean required);
 
-    default StepRegister onDatas(Function<T, List<Param>> fun) {
-        return this.onDatas(fun, false);
-    }
+  default StepRegister onDatas(Function<T, List<Param>> fun) {
+    return this.onDatas(fun, false);
+  }
 
-    default StepRegister onRequiredDatas(Function<T, List<Param>> fun) {
-        return this.onDatas(fun, true);
-    }
+  default StepRegister onRequiredDatas(Function<T, List<Param>> fun) {
+    return this.onDatas(fun, true);
+  }
 
-    StepRegister onDatas(Function<T, List<Param>> fun, boolean required);
+  StepRegister onDatas(Function<T, List<Param>> fun, boolean required);
 }

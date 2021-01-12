@@ -12,31 +12,31 @@ import java.util.function.Consumer;
  */
 public interface BeeHttpRequestSupport<T> {
 
-    BeeHttpRequestSupport<T> onException(Consumer<Throwable> e);
+  BeeHttpRequestSupport<T> onException(Consumer<Throwable> e);
 
-    default BeeHttpRequestSupport<T> header(Map<String, String> headers) {
-        headers.forEach((k, v) -> {
-            this.header(k, v);
+  default BeeHttpRequestSupport<T> header(Map<String, String> headers) {
+    headers.forEach(
+        (k, v) -> {
+          this.header(k, v);
         });
-        return this;
-    }
+    return this;
+  }
 
-    BeeHttpRequestSupport<T> header(String key, String value);
+  BeeHttpRequestSupport<T> header(String key, String value);
 
-    default BeeHttpRequestBodySupport<T> doPost() {
-        return this.doPost(__BeeEnvironment.Http.connectionTimeOut(),
-            __BeeEnvironment.Http.readTimeOut());
-    }
+  default BeeHttpRequestBodySupport<T> doPost() {
+    return this.doPost(
+        __BeeEnvironment.Http.connectionTimeOut(), __BeeEnvironment.Http.readTimeOut());
+  }
 
-    BeeHttpRequestBodySupport<T> doPost(int connectionTimeOut, int readTimeOut);
+  BeeHttpRequestBodySupport<T> doPost(int connectionTimeOut, int readTimeOut);
 
-    default BeeHttpRequestBodySupport<T> doGet() {
-        return this.doGet(__BeeEnvironment.Http.connectionTimeOut(),
-            __BeeEnvironment.Http.readTimeOut());
-    }
+  default BeeHttpRequestBodySupport<T> doGet() {
+    return this.doGet(
+        __BeeEnvironment.Http.connectionTimeOut(), __BeeEnvironment.Http.readTimeOut());
+  }
 
-    BeeHttpRequestBodySupport<T> doGet(int connectionTimeOut, int readTimeOut);
+  BeeHttpRequestBodySupport<T> doGet(int connectionTimeOut, int readTimeOut);
 
-    BeeHttpRequestBodySupport<T> mock(T mockData);
-
+  BeeHttpRequestBodySupport<T> mock(T mockData);
 }
