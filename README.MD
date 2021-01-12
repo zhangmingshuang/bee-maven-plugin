@@ -1,8 +1,9 @@
-i# BEE MAVEN 插件
+# BEE MAVEN 插件
+
 用来扫描特定的类生产对应的可匹配调用的接口信息。
-（注：代码很乱...还没时间整理...）
 
 # 使用示例
+
 ```maven
 <plugin>
     <groupId>com.nascent.maven.plugin</groupId>
@@ -19,10 +20,13 @@ i# BEE MAVEN 插件
 ```
 
 # 使用
+
 运行`mvn bee:bee`，默认会在项目的测试目录下生成对应的测试依赖代码。
 
 # 配置说明
+
 ## 参数动态附值
+
 ```java
  BeeApplication.globalRequestParamRegister()
     //如果有nonce字段，而且对象本身值为null,则使用该数据
@@ -37,7 +41,9 @@ i# BEE MAVEN 插件
         return RequestSign.sign(maps, APP_SECRET);
     });
 ```
+
 ## 请求示例
+
 ```java
 RegisterAuthorityRequest request = new RegisterAuthorityRequest();
 BeeAsserts<RegisterAuthorityResponse> asserts
@@ -59,8 +65,8 @@ BeeAsserts<RegisterAuthorityResponse> asserts
 ```
 
 ## 强化的参数动态附值
-由于服务流程问题，其他接口的请求数据，可能需要经过请求某个接口之后的响应数据，
-所以，在特定接口响应成功之后，需要将数据填冲到其他的请求接口中。
+
+由于服务流程问题，其他接口的请求数据，可能需要经过请求某个接口之后的响应数据， 所以，在特定接口响应成功之后，需要将数据填冲到其他的请求接口中。
 
 ```java
 RegisterAuthorityRequest request = new RegisterAuthorityRequest();
@@ -84,7 +90,9 @@ BeeApplication.stepPrepositionRegister()
 ```
 
 ## 异常处理
+
 ### 方法异常
+
 ```java
 BeeBasisController
     .registerAuthority()
@@ -97,13 +105,16 @@ BeeBasisController
     .asserts()
     .isTrue(x -> x.getSuccess());
 ```
+
 ### 全局异常
+
 ```java
  BeeApplication.configuration()
     .globalException(e -> e.printStackTrace());
 ```
 
 ## 动态修改请求地址
+
 ```java
  BeeApplication.configuration()
     .location("http://xxxx");
@@ -133,19 +144,24 @@ BeeApplication.configuration()
 ```
 
 ## JSON配置处理
+
 ### 设置Date格式化
+
 ```java
 BeeApplication.configuration()
             .getJsonParser().configuration().dateFormat("yyyy-MM-dd HH:mm:ss");
 ```
 
 ## 关于测试
+
 ### 测试懒加载
-公司开发框架中，会加载所有的类，并进行初始化。
-该情况会导致测试中的静态初始化模块被执行而导致异常。
+
+公司开发框架中，会加载所有的类，并进行初始化。 该情况会导致测试中的静态初始化模块被执行而导致异常。
 
 ### 解析方式
+
 进行类的懒初始化加载
+
 ```
 //测试基础类示例
 public class BasicTest {
@@ -197,6 +213,7 @@ public class BasicTest {
 ```
 
 ## 测试用例
+
 ```java
 @Slf4j
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
