@@ -2,7 +2,12 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <groupId>com.nascent.maven.plugin</groupId>
   <artifactId>bee</artifactId>
+  <version>1.2.1-RELEASE</version>
+
+  <modelVersion>4.0.0</modelVersion>
 
   <build>
     <plugins>
@@ -34,7 +39,7 @@
               <goal>flatten</goal>
             </goals>
             <id>flatten</id>
-            <phase>process-resources</phase>
+            <phase>compile</phase>
           </execution>
           <execution>
             <goals>
@@ -67,22 +72,11 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <distributionManagement>
-    <repository>
-      <id>maven-207</id>
-      <name>nascent-cloud</name>
-      <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
-    </repository>
-  </distributionManagement>
 
-  <groupId>com.nascent.maven.plugin</groupId>
-
-  <modelVersion>4.0.0</modelVersion>
 
   <modules>
     <module>bee-plugin</module>
     <module>bee-test</module>
-    <module>dependency</module>
   </modules>
 
   <packaging>pom</packaging>
@@ -90,16 +84,9 @@
   <properties>
     <beeProject.build.sourceEncoding>UTF-8</beeProject.build.sourceEncoding>
     <java.version>1.8</java.version>
-    <version>1.2.0-SNAPSHOT</version>
   </properties>
 
   <repositories>
-    <repository>
-      <id>maven-207</id>
-      <name>nascent-cloud1</name>
-      <url>http://47.92.207.189/nexus/content/repositories/snapshots/</url>
-    </repository>
-
     <repository>
       <id>aliyun</id>
       <name>aliyun Maven</name>
@@ -107,6 +94,5 @@
     </repository>
   </repositories>
 
-  <version>${version}</version>
 
 </project>

@@ -8,7 +8,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 
 /**
- * .
+ * Mojo dependency context.
  *
  * @author zhangmsh
  * @version 1.0.0
@@ -24,7 +24,7 @@ public class MojoContexts {
   public static void init(AbstractBeeMojo mojo) {
     MojoLog mojoLog = MojoLog.newInstance(mojo.getLog());
     MojoContexts.addMojoContext(mojoLog);
-
+    // the maven plugin descriptor that is the bee plugin.
     PluginDescriptor pluginDescriptor =
         (PluginDescriptor) mojo.getPluginContext().get("pluginDescriptor");
     MojoPlugin mojoPlugin = MojoPlugin.newInstance(pluginDescriptor);
@@ -67,5 +67,9 @@ public class MojoContexts {
 
   public static MojoProject getProject() {
     return getMojoContext(MojoProject.class);
+  }
+
+  public static void clear() {
+    MOJO_CONTEXTS.remove();
   }
 }

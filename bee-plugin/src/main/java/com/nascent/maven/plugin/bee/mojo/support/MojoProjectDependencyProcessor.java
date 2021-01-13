@@ -1,5 +1,6 @@
 package com.nascent.maven.plugin.bee.mojo.support;
 
+import com.nascent.maven.plugin.bee.constant.Config;
 import com.nascent.maven.plugin.bee.mojo.context.MojoContexts;
 import com.nascent.maven.plugin.bee.mojo.context.MojoProject;
 import com.nascent.maven.plugin.bee.mojo.xml.BeeDependency;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
 import org.apache.maven.model.Dependency;
 import org.xml.sax.SAXException;
 
@@ -32,36 +34,44 @@ import org.xml.sax.SAXException;
  */
 public class MojoProjectDependencyProcessor {
 
-  public static List<Dependency> jarDependencies(boolean dependencyManagementSkip) {
-    List<Dependency> dependencies = new ArrayList<>();
+  private static final int CAPACITY = 32;
+
+  private MojoProjectDependencyProcessor() {}
+
+  /**
+   * process all the dependencies jars.
+   *
+   * @param skipDependencyManagement skip {@code <DependencyManagement>} tag dependencies.
+   * @return all the dependencies jars.
+   */
+  @SuppressWarnings("MethodWithMoreThanThreeNegations")
+  public static List<Dependency> processJarDependencies(boolean skipDependencyManagement) {
+    List<Dependency> dependencies = new ArrayList<>(8);
+    // the project that run in bee plugin.
     MojoProject project = MojoContexts.getProject();
     // 对应maven配置中的dependencyManagement标签
-    if (!dependencyManagementSkip && project.getDependencyManagement() != null) {
+    if (!skipDependencyManagement && project.getDependencyManagement() != null) {
       List<Dependency> managementDependencies = project.getDependencyManagement().getDependencies();
       if (!CollectionUtils.isEmpty(managementDependencies)) {
         dependencies.addAll(parseDependencies(managementDependencies, false));
       }
-    } else {
-      MojoContexts.getLogger()
-          .warn("DependencyManagement is null. isSkip:" + dependencyManagementSkip);
     }
 
-    if (!CollectionUtils.isEmpty(project.getDependencies())) {
-      dependencies.addAll(parseDependencies(project.getDependencies(), true));
-    } else {
-      MojoContexts.getLogger().warn("Project Dependencies is empty.");
+    List<Dependency> projectDependencies = project.getDependencies();
+    if (!CollectionUtils.isEmpty(projectDependencies)) {
+      dependencies.addAll(parseDependencies(projectDependencies, true));
     }
     return dependencies;
   }
 
   private static List<Dependency> parseDependencies(
-      List<Dependency> dependencies, boolean sourceLocationHanld) {
+      List<Dependency> dependencies, boolean sourceLocationHandle) {
     if (CollectionUtils.isEmpty(dependencies)) {
       return Collections.emptyList();
     }
     List<Dependency> result = new ArrayList<>(dependencies.size());
     for (Dependency dependency : dependencies) {
-      parseDependencyToList(result, dependency, sourceLocationHanld);
+      parseDependencyToList(result, dependency, sourceLocationHandle);
     }
     return result;
   }
@@ -69,14 +79,12 @@ public class MojoProjectDependencyProcessor {
   private static void parseDependencyToList(
       List<Dependency> result, Dependency dependency, boolean sourceLocationHanlde) {
     String version = dependency.getVersion();
-    if (version == null) {
+    boolean isCompile =
+        StringUtils.isEmpty(dependency.getScope()) || Config.COMPILE.equals(dependency.getScope());
+    boolean isJar =
+        StringUtils.isEmpty(dependency.getType()) || Config.JAR.equals(dependency.getType());
+    if (version == null || !isCompile || !isJar) {
       // 如果存在空的版本信息，则表示会有对应的dependencyManagement
-      return;
-    }
-    if (dependency.getScope() != null && !"compile".equals(dependency.getScope())) {
-      return;
-    }
-    if (dependency.getType() != null && !"jar".equals(dependency.getType())) {
       return;
     }
     // 动态版本，此时需要依赖的配置项
@@ -105,8 +113,8 @@ public class MojoProjectDependencyProcessor {
     String artifactId = dependency.getArtifactId();
     String version = dependency.getVersion();
     return Paths.get(
-        groupId.replace(".", File.separator),
-        artifactId.replace(".", File.separator),
+        Config.DOT_PATTERN.matcher(groupId).replaceAll(Matcher.quoteReplacement(File.separator)),
+        Config.DOT_PATTERN.matcher(artifactId).replaceAll(Matcher.quoteReplacement(File.separator)),
         version,
         artifactId + "-" + version + ".pom");
   }
@@ -123,8 +131,8 @@ public class MojoProjectDependencyProcessor {
     if (StringUtils.isEmpty(version)) {
       return false;
     }
-    version = version.trim();
-    return version.startsWith("${") && version.endsWith("}");
+    //noinspection SingleCharacterStartsWith
+    return version.trim().startsWith("${") && version.endsWith("}");
   }
 
   private static void appendDependencyJarPomDependencies(List<Dependency> result, Path pomFile) {
@@ -165,27 +173,27 @@ public class MojoProjectDependencyProcessor {
     MojoProject project = MojoContexts.getProject();
     File pomFile = project.getPomFile();
     if (pomFile == null) {
-      return null;
+      return Collections.emptySet();
     }
     Path baseDir = project.getBaseDir();
     String outputDirectory = MojoContexts.getBuild().getOutputDirectory();
     String targetClassPath = outputDirectory.replace(baseDir.toString(), "");
-    Set<String> moduleTargetClassPaths = new HashSet<>();
-    String forward = "";
+    Set<String> moduleTargetClassPaths = new HashSet<>(8);
+    StringBuilder forward = new StringBuilder(CAPACITY);
     try {
       while (pomFile != null) {
         BeeXml xmlFile = BeeXml.from(new FileInputStream(pomFile));
         List<String> modules = xmlFile.getModules();
         if (!CollectionUtils.isEmpty(modules)) {
           for (String module : modules) {
-            Path path = baseDir.resolve(Paths.get(forward, module, targetClassPath));
+            Path path = baseDir.resolve(Paths.get(forward.toString(), module, targetClassPath));
             moduleTargetClassPaths.add(path.toString());
           }
         }
         BeeParentDependency parent = xmlFile.getParent();
         if (parent != null) {
           pomFile = new File(pomFile.getParent() + "/" + parent.getRelativePath());
-          forward += "../";
+          forward.append("../");
         } else {
           pomFile = null;
         }

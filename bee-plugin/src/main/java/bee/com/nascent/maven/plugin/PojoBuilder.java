@@ -12,11 +12,12 @@ import java.util.function.Supplier;
  * @version 1.0.0
  * @date 2020/5/15
  */
+@SuppressWarnings("MethodWithTooManyParameters")
 public class PojoBuilder<T> {
 
   private final Supplier<T> instantiator;
 
-  private List<Consumer<T>> modifiers = new ArrayList<>();
+  private final List<Consumer<T>> modifiers = new ArrayList<>(8);
 
   public PojoBuilder(Supplier<T> instant) {
     this.instantiator = instant;
@@ -27,46 +28,46 @@ public class PojoBuilder<T> {
   }
 
   public PojoBuilder<T> with(Consumer<T> consumer) {
-    consumer.accept(instantiator.get());
+    consumer.accept(this.instantiator.get());
     return this;
   }
 
   public <P1> PojoBuilder<T> with(Consumer1<T, P1> consumer, P1 p1) {
     Consumer<T> c = instance -> consumer.accept(instance, p1);
-    modifiers.add(c);
+    this.modifiers.add(c);
     return this;
   }
 
   public <P1, P2> PojoBuilder<T> with(Consumer2<T, P1, P2> consumer, P1 p1, P2 p2) {
     Consumer<T> c = instance -> consumer.accept(instance, p1, p2);
-    modifiers.add(c);
+    this.modifiers.add(c);
     return this;
   }
 
   public <P1, P2, P3> PojoBuilder<T> with(Consumer3<T, P1, P2, P3> consumer, P1 p1, P2 p2, P3 p3) {
     Consumer<T> c = instance -> consumer.accept(instance, p1, p2, p3);
-    modifiers.add(c);
+    this.modifiers.add(c);
     return this;
   }
 
   public <P1, P2, P3, P4> PojoBuilder<T> with(
       Consumer4<T, P1, P2, P3, P4> consumer, P1 p1, P2 p2, P3 p3, P4 p4) {
     Consumer<T> c = instance -> consumer.accept(instance, p1, p2, p3, p4);
-    modifiers.add(c);
+    this.modifiers.add(c);
     return this;
   }
 
   public <P1, P2, P3, P4, P5> PojoBuilder<T> with(
       Consumer5<T, P1, P2, P3, P4, P5> consumer, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) {
     Consumer<T> c = instance -> consumer.accept(instance, p1, p2, p3, p4, p5);
-    modifiers.add(c);
+    this.modifiers.add(c);
     return this;
   }
 
   public T build() {
-    T value = instantiator.get();
-    modifiers.forEach(modifier -> modifier.accept(value));
-    modifiers.clear();
+    T value = this.instantiator.get();
+    this.modifiers.forEach(modifier -> modifier.accept(value));
+    this.modifiers.clear();
     return value;
   }
 

@@ -24,7 +24,7 @@ public class ClassFileScanner implements Scanner {
 
   @Override
   public List<Path> scan(Path folder) throws IOException {
-    List<Path> paths = new ArrayList<>();
+    List<Path> paths = new ArrayList<>(8);
     try {
       Files.walkFileTree(
           folder,
@@ -39,7 +39,7 @@ public class ClassFileScanner implements Scanner {
             }
           });
     } catch (NoSuchFileException e) {
-      MojoContexts.getLogger().error("class files not found. may be should rebuild project?");
+      MojoContexts.getLogger().error("classes not founded. should be rebuild the project?");
       MojoContexts.getLogger().errorAndExit(e);
     }
     return paths;

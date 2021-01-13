@@ -2,30 +2,41 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <artifactId>bee</artifactId>
+    <groupId>com.nascent.maven.plugin</groupId>
+    <version>1.2.1-RELEASE</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
   <artifactId>bee-test</artifactId>
+
+  <properties>
+    <dom4j.version>1.6.1</dom4j.version>
+    <springversion>5.2.1.RELEASE</springversion>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
+        <groupId>com.nascent.maven.plugin</groupId>
         <artifactId>bee-maven-plugin</artifactId>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
               <goal>bee</goal>
             </goals>
+            <phase>compile</phase>
           </execution>
         </executions>
-        <groupId>com.nascent.maven.plugin</groupId>
-        <version>${version}</version>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
-    <dependency>
-      <artifactId>bee-test-dependency</artifactId>
-      <groupId>com.nascent.maven.plugin</groupId>
-      <version>${version}</version>
-    </dependency>
     <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -53,18 +64,6 @@
       <version>[4.13.1,)</version>
     </dependency>
   </dependencies>
-  <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>bee</artifactId>
-    <groupId>com.nascent.maven.plugin</groupId>
-    <relativePath>../pom.xml</relativePath>
-    <version>${version}</version>
-  </parent>
-
-  <properties>
-    <dom4j.version>1.6.1</dom4j.version>
-    <springversion>5.2.1.RELEASE</springversion>
-  </properties>
 
 </project>

@@ -18,7 +18,7 @@ public class Param<T> {
   }
 
   public String getKey() {
-    return key;
+    return this.key;
   }
 
   public void setKey(String key) {
@@ -26,7 +26,7 @@ public class Param<T> {
   }
 
   public T getValue() {
-    return value;
+    return this.value;
   }
 
   public void setValue(T value) {

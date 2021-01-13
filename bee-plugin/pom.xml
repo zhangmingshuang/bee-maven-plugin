@@ -2,7 +2,27 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>bee</artifactId>
+    <groupId>com.nascent.maven.plugin</groupId>
+    <version>1.2.1-RELEASE</version>
+  </parent>
+
   <artifactId>bee-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+
+  <properties>
+    <!-- 要生成的依赖源码文件目录 -->
+    <resources.directory>
+      src/main/java/bee/com/nascent/maven/plugin
+    </resources.directory>
+    <!-- 依赖源码文件打包到jar目录 -->
+    <resources.target>resources</resources.target>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -40,35 +60,36 @@
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
       </plugin>
-      <!--            <plugin>-->
-      <!--                <groupId>org.apache.maven.plugins</groupId>-->
-      <!--                <artifactId>maven-checkstyle-plugin</artifactId>-->
-      <!--                <version>3.1.1</version>-->
-      <!--                <configuration>-->
-      <!--                    <configLocation>google_checks.xml</configLocation>-->
-      <!--                    <encoding>UTF-8</encoding>-->
-      <!--                    <consoleOutput>true</consoleOutput>-->
-      <!--                    <failOnViolation>true</failOnViolation>-->
-      <!--                    <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-      <!--                </configuration>-->
-      <!--                <executions>-->
-      <!--                    <execution>-->
-      <!--                        <id>checkstyle-validation</id>-->
-      <!--                        <phase>validate</phase>-->
-      <!--                        <configuration>-->
-      <!--                            <configLocation>google_checks.xml</configLocation>-->
-      <!--                            <encoding>UTF-8</encoding>-->
-      <!--                            <consoleOutput>true</consoleOutput>-->
-      <!--                            <failOnViolation>true</failOnViolation>-->
-      <!--                            <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-      <!--                        </configuration>-->
-      <!--                        <goals>-->
-      <!--                            <goal>check</goal>-->
-      <!--                        </goals>-->
-      <!--                    </execution>-->
-      <!--                </executions>-->
-      <!--            </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.1</version>
+        <dependencies>
+          <dependency>
+            <artifactId>checkstyle</artifactId>
+            <groupId>com.puppycrawl.tools</groupId>
+            <version>8.38</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <failsOnError>true</failsOnError>
+          <failOnViolation>true</failOnViolation>
+          <consoleOutput>true</consoleOutput>
+          <encoding>UTF-8</encoding>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+
     <resources>
       <resource>
         <directory>${resources.directory}</directory>
@@ -138,23 +159,4 @@
       <version>1.10.19</version>
     </dependency>
   </dependencies>
-  <modelVersion>4.0.0</modelVersion>
-
-  <packaging>maven-plugin</packaging>
-
-  <parent>
-    <artifactId>bee</artifactId>
-    <groupId>com.nascent.maven.plugin</groupId>
-    <relativePath>../pom.xml</relativePath>
-    <version>${version}</version>
-  </parent>
-
-  <properties>
-    <!-- 要生成的依赖源码文件目录 -->
-    <resources.directory>
-      src/main/java/bee/com/nascent/maven/plugin
-    </resources.directory>
-    <!-- 依赖源码文件打包到jar目录 -->
-    <resources.target>resources</resources.target>
-  </properties>
 </project>

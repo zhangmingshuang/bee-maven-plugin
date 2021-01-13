@@ -2,6 +2,7 @@ package com.nascent.maven.plugin.bee.mojo.context;
 
 import bee.com.nascent.maven.plugin.BeeApplication;
 import com.nascent.maven.plugin.bee.constant.Config;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +18,8 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
  */
 public class MojoPlugin implements Context {
 
-  private PluginDescriptor pluginDescriptor;
-  private Map<String, String> pluginProperties = new HashMap<>(2, 1);
+  private final Map<String, String> pluginProperties = new HashMap<>(2, 1);
+  private final PluginDescriptor pluginDescriptor;
 
   private MojoPlugin(PluginDescriptor pluginDescriptor) {
     this.pluginDescriptor = pluginDescriptor;
@@ -29,8 +30,13 @@ public class MojoPlugin implements Context {
     return new MojoPlugin(pluginDescriptor);
   }
 
+  private void init() {
+    // 初始化
+    this.doPropertiesLoad();
+  }
+
   public Map<String, String> getPluginProperties() {
-    return new HashMap<>(pluginProperties);
+    return new HashMap<>(this.pluginProperties);
   }
 
   public void addPluginProperties(String key, String value) {
@@ -38,16 +44,11 @@ public class MojoPlugin implements Context {
   }
 
   public String getJarFileResource() {
-    return pluginDescriptor.getSource();
+    return this.pluginDescriptor.getSource();
   }
 
   public String getResourcetPackageName() {
     return BeeApplication.class.getPackage().getName();
-  }
-
-  private void init() {
-    // 初始化
-    this.doPropertiesLoad();
   }
 
   private void doPropertiesLoad() {
@@ -58,9 +59,9 @@ public class MojoPlugin implements Context {
       if (!properties.isEmpty()) {
         properties
             .stringPropertyNames()
-            .forEach(key -> pluginProperties.put(key, properties.getProperty(key)));
+            .forEach(key -> this.pluginProperties.put(key, properties.getProperty(key)));
       }
-    } catch (Throwable e) {
+    } catch (IOException e) {
       MojoContexts.getLogger().errorAndExit(e);
     }
   }

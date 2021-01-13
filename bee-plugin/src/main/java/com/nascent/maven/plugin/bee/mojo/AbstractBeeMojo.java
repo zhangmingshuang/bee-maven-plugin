@@ -16,7 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
- * .
+ * The {@code Bee} maven plugin abstract bean.
  *
  * @author zhangmsh
  * @version 1.0.0
@@ -32,14 +32,12 @@ public class AbstractBeeMojo extends AbstractMojo {
   /** 插件使用项目信息 */
   @Parameter(defaultValue = "${project}", readonly = true, required = true)
   private MavenProject mavenProject;
-
   /** 项目引用依赖时条件依赖信息表达式，如com.* */
   @Parameter(name = "printDependency", property = "printDependency")
   private String printDependency;
   /** 配置跳过pom中的dependencyManagement依赖 */
   @Parameter(name = "dependencyManagementSkip", property = "dependencyManagementSkip")
   private boolean dependencyManagementSkip;
-
   /** 模块Class依赖，如果是非jar包依赖，需要配置对应的依赖模块的class依赖。 */
   @Parameter(name = "models")
   private List<String> models;
@@ -49,21 +47,22 @@ public class AbstractBeeMojo extends AbstractMojo {
     MojoContexts.init(this);
     // 依赖项目依赖
     List<Dependency> dependencies =
-        MojoProjectDependencyProcessor.jarDependencies(dependencyManagementSkip);
+        MojoProjectDependencyProcessor.processJarDependencies(this.dependencyManagementSkip);
     Set<String> moduleOutputDirectory = MojoProjectDependencyProcessor.moduleDependencies();
 
     MojoClassProcessor classProcessor =
         MojoClassProcessor.newInstance()
-            .printDependency(printDependency)
+            .printDependency(this.printDependency)
             // 注册扫描项目的Class
             .registerClassPath(MojoContexts.getBuild().getOutputDirectory())
             .registerClassPath(moduleOutputDirectory)
             // 注册扫描项目的依赖包
             .registerDependencies(dependencies)
-            .scan(basicPackage);
+            .scan(this.basicPackage);
 
     // 复制资源会清空目录
     MojoResourceProcessor.generateTo(MojoContexts.getBuild().getTestSourceDirectory());
     classProcessor.generateTo(MojoContexts.getBuild().getTestSourceDirectory());
+    MojoContexts.clear();
   }
 }

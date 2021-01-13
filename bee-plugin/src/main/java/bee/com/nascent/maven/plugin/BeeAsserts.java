@@ -16,7 +16,7 @@ public interface BeeAsserts<T> {
   /**
    * 非空
    *
-   * @return
+   * @return this
    */
   default BeeAsserts<T> notNull() {
     return this.notNull("assert that the body is not null, but unexpected.");
@@ -55,7 +55,8 @@ public interface BeeAsserts<T> {
    */
   default BeeAsserts<T> isTrue(Function<T, Boolean> fun) {
     return this.isTrue(
-        fun, "assert that the value of function is true," + "but unexpected. body: " + bodyJson());
+        fun, "assert that the value of function is true," + "but unexpected. body: " + this
+            .bodyJson());
   }
 
   /**
@@ -75,7 +76,8 @@ public interface BeeAsserts<T> {
    */
   default BeeAsserts<T> isFalse(Function<T, Boolean> fun) {
     return this.isFalse(
-        fun, "assert that the value of function is false," + "but unexpected. body: " + bodyJson());
+        fun, "assert that the value of function is false," + "but unexpected. body: " + this
+            .bodyJson());
   }
 
   /**
@@ -95,7 +97,7 @@ public interface BeeAsserts<T> {
    * @return
    */
   default BeeAsserts<T> isEquals(Function<T, Object> fun, Object eqValue) {
-    return this.isEquals(fun, eqValue, "expect is " + fun.apply(body()) + " but " + eqValue);
+    return this.isEquals(fun, eqValue, "expect is " + fun.apply(this.body()) + " but " + eqValue);
   }
 
   /**
@@ -116,7 +118,7 @@ public interface BeeAsserts<T> {
    * @return
    */
   default BeeAsserts<T> isEquals(Function<T, Long> fun, long eqValue) {
-    return this.isEquals(fun, eqValue, "expect is " + fun.apply(body()) + " but " + eqValue);
+    return this.isEquals(fun, eqValue, "expect is " + fun.apply(this.body()) + " but " + eqValue);
   }
 
   /**
@@ -137,7 +139,7 @@ public interface BeeAsserts<T> {
    * @return
    */
   default BeeAsserts<T> isEquals(Function<T, Float> fun, float eqValue) {
-    return this.isEquals(fun, eqValue, "expect is " + fun.apply(body()) + " but " + eqValue);
+    return this.isEquals(fun, eqValue, "expect is " + fun.apply(this.body()) + " but " + eqValue);
   }
 
   /**
@@ -158,7 +160,7 @@ public interface BeeAsserts<T> {
    * @return
    */
   default BeeAsserts<T> isEquals(Function<T, Double> fun, double eqValue) {
-    return this.isEquals(fun, eqValue, "expect is " + fun.apply(body()) + " but " + eqValue);
+    return this.isEquals(fun, eqValue, "expect is " + fun.apply(this.body()) + " but " + eqValue);
   }
 
   /**
@@ -192,7 +194,7 @@ public interface BeeAsserts<T> {
    * @return
    */
   default BeeAsserts<T> bodyJson(Consumer<String> consumer) {
-    consumer.accept(bodyJson());
+    consumer.accept(this.bodyJson());
     return this;
   }
 }

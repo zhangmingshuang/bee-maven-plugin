@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -37,10 +38,10 @@ public class MojoClassProcessor {
 
   private static final ClassPool CLASS_POOL = ClassPool.getDefault();
   private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-  private static final Set<String> APPENDED_CLASS_PATHS = new HashSet<>();
+  private static final Set<String> APPENDED_CLASS_PATHS = new HashSet<>(8);
   private static final Scanner SCANNER = new ClassFileScanner();
   /** 扫描到的类 */
-  private List<CtClass> scannedClasses = new ArrayList<>();
+  private final List<CtClass> scannedClasses = new ArrayList<>(16);
 
   private String printDependency;
 
@@ -50,7 +51,7 @@ public class MojoClassProcessor {
 
   public MojoClassProcessor registerDependencies(List<Dependency> dependencies) {
     if (!CollectionUtils.isEmpty(dependencies)) {
-      dependencies.forEach(dependency -> this.appendDependency(dependency));
+      dependencies.forEach(this::appendDependency);
     }
     return this;
   }
@@ -97,7 +98,8 @@ public class MojoClassProcessor {
     if (StringUtils.isEmpty(type)) {
       type = "jar";
     }
-    String folder = groupId.replace(".", File.separator);
+    String folder =
+        Config.DOT_PATTERN.matcher(groupId).replaceAll(Matcher.quoteReplacement(File.separator));
     Path jarFile =
         Paths.get(basedir, folder, artifactId, version, artifactId + "-" + version + "." + type);
 
@@ -118,7 +120,7 @@ public class MojoClassProcessor {
     this.appendClassPath(jarKey, jarFile);
   }
 
-  private Param getSnapshotJar(String jarKey, Path jarFile) {
+  private Param<Path> getSnapshotJar(String jarKey, Path jarFile) {
     Path repositories = jarFile.getParent().resolve("_remote.repositories");
     try {
       List<String> lines = Files.readAllLines(repositories);
@@ -130,12 +132,12 @@ public class MojoClassProcessor {
         if (pomOrJar.endsWith("jar")) {
           jarFile = jarFile.getParent().resolve(pomOrJar);
         }
-        jarKey = new StringBuilder(jarKey).append('>').append(pomOrJar).toString();
+        jarKey = jarKey + '>' + pomOrJar;
       }
     } catch (IOException e) {
       // ignore
     }
-    return new Param(jarKey, jarFile);
+    return new Param<Path>(jarKey, jarFile);
   }
 
   private void appendClassPath(String jarKey, Path jarFile) {
@@ -145,7 +147,8 @@ public class MojoClassProcessor {
         jar = jar.replace("-sources.jar", ".jar");
       }
       CLASS_POOL.appendClassPath(jar);
-      if (!StringUtils.isEmpty(printDependency) && PATH_MATCHER.match(printDependency, jarKey)) {
+      if (!StringUtils.isEmpty(this.printDependency)
+          && PATH_MATCHER.match(this.printDependency, jarKey)) {
         MojoContexts.getLogger().info("appendClassPath:" + jarKey + " > " + jar);
       }
       MojoContexts.getLogger().debug("appendClassPath:" + jarKey + " > " + jar);
@@ -155,14 +158,14 @@ public class MojoClassProcessor {
   }
 
   public MojoClassProcessor generateTo(String folder) {
-    if (!CollectionUtils.isEmpty(scannedClasses)) {
+    if (!CollectionUtils.isEmpty(this.scannedClasses)) {
       String packageName = MojoContexts.getPlugin().getResourcetPackageName();
       Path path = Paths.get(folder);
       MojoContexts.getLogger().info("class generate path:" + path);
-      MojoContexts.getLogger().info("class generate size:" + scannedClasses.size());
+      MojoContexts.getLogger().info("class generate size:" + this.scannedClasses.size());
       MojoContexts.getLogger().info("class generate basicPackageName:" + packageName);
       try {
-        for (CtClass scannedClass : scannedClasses) {
+        for (CtClass scannedClass : this.scannedClasses) {
           BeeTestFileBuilder.builder(scannedClass).javaFile(packageName).writeTo(path);
         }
       } catch (BuildException e) {
@@ -199,7 +202,7 @@ public class MojoClassProcessor {
         CtClass ctClass = CLASS_POOL.makeClass(new FileInputStream(file.toFile()));
         classes.add(ctClass);
       }
-      scannedClasses.addAll(classes);
+      this.scannedClasses.addAll(classes);
     } catch (IOException e) {
       MojoContexts.getLogger().errorAndExit(e);
     }

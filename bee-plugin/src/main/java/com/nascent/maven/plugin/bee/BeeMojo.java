@@ -4,7 +4,7 @@ import com.nascent.maven.plugin.bee.mojo.AbstractBeeMojo;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * .
+ * Bee Maven Plugin Entrance.
  *
  * @author zhangmsh
  * @version 1.0.0
