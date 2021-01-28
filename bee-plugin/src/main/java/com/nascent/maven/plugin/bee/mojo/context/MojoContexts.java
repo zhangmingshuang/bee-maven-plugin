@@ -39,7 +39,7 @@ public class MojoContexts {
     MojoContexts.addMojoContext(mojoBuild);
   }
 
-  private static void addMojoContext(Context mojoContext) {
+  public static void addMojoContext(Context mojoContext) {
     Map<Class, Context> map = MOJO_CONTEXTS.get();
     if (map == null) {
       map = new HashMap<>(16);

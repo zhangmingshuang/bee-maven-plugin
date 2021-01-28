@@ -1,12 +1,11 @@
 package com.nascent.maven.plugin.bee.mojo.xml;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * .
+ * the {@code <dependency>}'s {@code <execlusion>}.
  *
  * @author zhangmsh
  * @version 1.0.0
@@ -15,13 +14,8 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class BeeDependency {
+public class PomDependencyExclusion {
 
   private String groupId;
   private String artifactId;
-  private String version;
-  private String type;
-  private String scope;
-  private String optional;
-  private List<BeeExclusion> exclusions;
 }

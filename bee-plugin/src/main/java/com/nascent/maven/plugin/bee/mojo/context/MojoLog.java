@@ -18,7 +18,7 @@ public class MojoLog implements Context {
     this.log = log;
   }
 
-  protected static MojoLog newInstance(Log log) {
+  public static MojoLog newInstance(Log log) {
     return new MojoLog(log);
   }
 

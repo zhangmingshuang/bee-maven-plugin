@@ -1,8 +1,9 @@
 package com.nascent.maven.plugin.bee.mojo;
 
 import com.nascent.maven.plugin.bee.mojo.context.MojoContexts;
+import com.nascent.maven.plugin.bee.mojo.dependency.MojoProjectDependencyProcessor;
+import com.nascent.maven.plugin.bee.mojo.dependency.ProjectDependencyProcessor;
 import com.nascent.maven.plugin.bee.mojo.support.MojoClassProcessor;
-import com.nascent.maven.plugin.bee.mojo.support.MojoProjectDependencyProcessor;
 import com.nascent.maven.plugin.bee.mojo.support.MojoResourceProcessor;
 import java.util.List;
 import java.util.Set;
@@ -26,13 +27,13 @@ import org.apache.maven.project.MavenProject;
 @ThreadSafe
 public class AbstractBeeMojo extends AbstractMojo {
 
-  /** 配置扫描类的包目录，如com.a.* */
-  @Parameter(name = "basicPackage")
-  private String basicPackage;
   /** 插件使用项目信息 */
   @Parameter(defaultValue = "${project}", readonly = true, required = true)
   private MavenProject mavenProject;
-  /** 项目引用依赖时条件依赖信息表达式，如com.* */
+  /** 配置扫描类的包目录，如com.a.* */
+  @Parameter(name = "basicPackage")
+  private String basicPackage;
+  /** 配置项目引用依赖需要输出的依赖信息表达式，如com.* */
   @Parameter(name = "printDependency", property = "printDependency")
   private String printDependency;
   /** 配置跳过pom中的dependencyManagement依赖 */
@@ -42,13 +43,17 @@ public class AbstractBeeMojo extends AbstractMojo {
   @Parameter(name = "models")
   private List<String> models;
 
+  private final ProjectDependencyProcessor projectDependencyProcessor =
+      new MojoProjectDependencyProcessor();
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     MojoContexts.init(this);
     // 依赖项目依赖
     List<Dependency> dependencies =
-        MojoProjectDependencyProcessor.processJarDependencies(this.dependencyManagementSkip);
-    Set<String> moduleOutputDirectory = MojoProjectDependencyProcessor.moduleDependencies();
+        this.projectDependencyProcessor.getDependencies(this.dependencyManagementSkip);
+    Set<String> moduleOutputDirectory = null;
+    //        MojoProjectDependencyProcessor.getProjectModuleDependenciesPath();
 
     MojoClassProcessor classProcessor =
         MojoClassProcessor.newInstance()

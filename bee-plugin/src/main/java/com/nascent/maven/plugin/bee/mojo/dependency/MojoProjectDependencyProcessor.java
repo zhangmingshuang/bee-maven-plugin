@@ -1,11 +1,12 @@
-package com.nascent.maven.plugin.bee.mojo.support;
+package com.nascent.maven.plugin.bee.mojo.dependency;
 
 import com.nascent.maven.plugin.bee.constant.Config;
 import com.nascent.maven.plugin.bee.mojo.context.MojoContexts;
 import com.nascent.maven.plugin.bee.mojo.context.MojoProject;
-import com.nascent.maven.plugin.bee.mojo.xml.BeeDependency;
-import com.nascent.maven.plugin.bee.mojo.xml.BeeParentDependency;
-import com.nascent.maven.plugin.bee.mojo.xml.BeeXml;
+import com.nascent.maven.plugin.bee.mojo.xml.Pom;
+import com.nascent.maven.plugin.bee.mojo.xml.PomDependency;
+import com.nascent.maven.plugin.bee.mojo.xml.PomParentDependency;
+import com.nascent.maven.plugin.bee.mojo.xml.XmlParser;
 import com.nascent.maven.plugin.bee.utils.CollectionUtils;
 import com.nascent.maven.plugin.bee.utils.StringUtils;
 import java.io.File;
@@ -19,11 +20,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import org.apache.maven.model.Dependency;
-import org.xml.sax.SAXException;
 
 /**
  * .
@@ -32,20 +33,64 @@ import org.xml.sax.SAXException;
  * @version 1.0.0
  * @date 2020/6/16
  */
-public class MojoProjectDependencyProcessor {
+public class MojoProjectDependencyProcessor implements ProjectDependencyProcessor {
 
   private static final int CAPACITY = 32;
 
-  private MojoProjectDependencyProcessor() {}
+  @Override
+  public ProjectDependency getProjectDependency() {
+    ProjectDependency projectDependency = new ProjectDependency();
+    MojoProject project = MojoContexts.getProject();
+    if (Objects.nonNull(project.getDependencyManagement())) {
+      projectDependency.setDependencyManagements(this.getDependencyManagements(project));
+    }
+    if (Objects.nonNull(project.getDependencies())) {
+      projectDependency.setDependencies(this.getDependencies(project));
+    }
+    return projectDependency;
+  }
+
+  /**
+   * get maven pom xml's {@code <dependencies>} tag dependencies jar.
+   *
+   * @param project maven project.
+   * @return dependencies jar.
+   */
+  protected List<Dependency> getDependencies(MojoProject project) {
+    List<Dependency> projectDependencies = project.getDependencies();
+    if (!CollectionUtils.isEmpty(projectDependencies)) {
+      return this.parseDependencies(projectDependencies, true);
+    }
+    return Collections.emptyList();
+  }
+
+  /**
+   * get maven pom xml's {@code <dependencyManagement>} tag dependencies jar.
+   *
+   * @param project maven project.
+   * @return dependencies jar.
+   */
+  protected List<Dependency> getDependencyManagements(MojoProject project) {
+    List<Dependency> managementDependencies = project.getDependencyManagement().getDependencies();
+    if (!CollectionUtils.isEmpty(managementDependencies)) {
+      return this.parseDependencies(managementDependencies, false);
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<Dependency> getDependencies(boolean skipDependencyManagement) {
+    return this.processJarDependencies(skipDependencyManagement);
+  }
 
   /**
    * process all the dependencies jars.
    *
-   * @param skipDependencyManagement skip {@code <DependencyManagement>} tag dependencies.
+   * @param skipDependencyManagement skip {@code <dependencyManagement>} tag dependencies.
    * @return all the dependencies jars.
    */
   @SuppressWarnings("MethodWithMoreThanThreeNegations")
-  public static List<Dependency> processJarDependencies(boolean skipDependencyManagement) {
+  public List<Dependency> processJarDependencies(boolean skipDependencyManagement) {
     List<Dependency> dependencies = new ArrayList<>(8);
     // the project that run in bee plugin.
     MojoProject project = MojoContexts.getProject();
@@ -53,30 +98,30 @@ public class MojoProjectDependencyProcessor {
     if (!skipDependencyManagement && project.getDependencyManagement() != null) {
       List<Dependency> managementDependencies = project.getDependencyManagement().getDependencies();
       if (!CollectionUtils.isEmpty(managementDependencies)) {
-        dependencies.addAll(parseDependencies(managementDependencies, false));
+        dependencies.addAll(this.parseDependencies(managementDependencies, false));
       }
     }
 
     List<Dependency> projectDependencies = project.getDependencies();
     if (!CollectionUtils.isEmpty(projectDependencies)) {
-      dependencies.addAll(parseDependencies(projectDependencies, true));
+      dependencies.addAll(this.parseDependencies(projectDependencies, true));
     }
     return dependencies;
   }
 
-  private static List<Dependency> parseDependencies(
+  private List<Dependency> parseDependencies(
       List<Dependency> dependencies, boolean sourceLocationHandle) {
     if (CollectionUtils.isEmpty(dependencies)) {
       return Collections.emptyList();
     }
     List<Dependency> result = new ArrayList<>(dependencies.size());
     for (Dependency dependency : dependencies) {
-      parseDependencyToList(result, dependency, sourceLocationHandle);
+      this.parseDependencyToList(result, dependency, sourceLocationHandle);
     }
     return result;
   }
 
-  private static void parseDependencyToList(
+  private void parseDependencyToList(
       List<Dependency> result, Dependency dependency, boolean sourceLocationHanlde) {
     String version = dependency.getVersion();
     boolean isCompile =
@@ -88,11 +133,11 @@ public class MojoProjectDependencyProcessor {
       return;
     }
     // 动态版本，此时需要依赖的配置项
-    if (isPropertyVersion(version)) {
+    if (this.isPropertyVersion(version)) {
       // 找到版本
       MojoProject project = MojoContexts.getProject();
       Properties properties = project.getProperties();
-      version = properties.getProperty(getPropertyVersion(version));
+      version = properties.getProperty(this.getPropertyVersion(version));
       if (StringUtils.isEmpty(version)) {
         return;
       }
@@ -103,12 +148,12 @@ public class MojoProjectDependencyProcessor {
       // 加载Pom
       MojoProject project = MojoContexts.getProject();
       Path pomFile =
-          Paths.get(project.getLocalRepositoryBaseDir()).resolve(getPomFilePath(dependency));
-      appendDependencyJarPomDependencies(result, pomFile);
+          Paths.get(project.getLocalRepositoryBaseDir()).resolve(this.getPomFilePath(dependency));
+      this.appendDependencyJarPomDependencies(result, pomFile);
     }
   }
 
-  public static Path getPomFilePath(Dependency dependency) {
+  public Path getPomFilePath(Dependency dependency) {
     String groupId = dependency.getGroupId();
     String artifactId = dependency.getArtifactId();
     String version = dependency.getVersion();
@@ -119,7 +164,7 @@ public class MojoProjectDependencyProcessor {
         artifactId + "-" + version + ".pom");
   }
 
-  private static String getPropertyVersion(String version) {
+  private String getPropertyVersion(String version) {
     if (StringUtils.isEmpty(version)) {
       return version;
     }
@@ -127,7 +172,7 @@ public class MojoProjectDependencyProcessor {
     return version.substring(2, version.length() - 1);
   }
 
-  private static boolean isPropertyVersion(String version) {
+  private boolean isPropertyVersion(String version) {
     if (StringUtils.isEmpty(version)) {
       return false;
     }
@@ -135,7 +180,7 @@ public class MojoProjectDependencyProcessor {
     return version.trim().startsWith("${") && version.endsWith("}");
   }
 
-  private static void appendDependencyJarPomDependencies(List<Dependency> result, Path pomFile) {
+  private void appendDependencyJarPomDependencies(List<Dependency> result, Path pomFile) {
     if (pomFile == null) {
       return;
     }
@@ -143,32 +188,32 @@ public class MojoProjectDependencyProcessor {
       return;
     }
     try {
-      BeeXml xmlFile = BeeXml.from(new FileInputStream(pomFile.toFile()));
-      List<BeeDependency> dependencies = xmlFile.getDependencies();
-      dependencies.addAll(xmlFile.getDependencyManagement());
+      Pom xmlFile = XmlParser.valueOf(new FileInputStream(pomFile.toFile()));
+      List<PomDependency> dependencies = xmlFile.getDependencies();
+      dependencies.addAll(xmlFile.getDependencyManagements());
       Map<String, String> properties = xmlFile.getProperties();
       if (!CollectionUtils.isEmpty(dependencies)) {
-        for (BeeDependency beeDep : dependencies) {
+        for (PomDependency beeDep : dependencies) {
           Dependency dependency = new Dependency();
           dependency.setArtifactId(beeDep.getArtifactId());
           dependency.setGroupId(beeDep.getGroupId());
           dependency.setOptional(beeDep.getOptional());
           dependency.setScope(beeDep.getScope());
           dependency.setType(beeDep.getType());
-          if (isPropertyVersion(beeDep.getVersion())) {
-            dependency.setVersion(properties.get(getPropertyVersion(beeDep.getVersion())));
+          if (this.isPropertyVersion(beeDep.getVersion())) {
+            dependency.setVersion(properties.get(this.getPropertyVersion(beeDep.getVersion())));
           } else {
             dependency.setVersion(beeDep.getVersion());
           }
-          parseDependencyToList(result, dependency, false);
+          this.parseDependencyToList(result, dependency, false);
         }
       }
-    } catch (IOException | SAXException e) {
+    } catch (IOException e) {
       MojoContexts.getLogger().error(e);
     }
   }
 
-  public static Set<String> moduleDependencies() {
+  public Set<String> getProjectModuleDependenciesPath() {
     // 取得依赖模块Jar包
     MojoProject project = MojoContexts.getProject();
     File pomFile = project.getPomFile();
@@ -182,7 +227,7 @@ public class MojoProjectDependencyProcessor {
     StringBuilder forward = new StringBuilder(CAPACITY);
     try {
       while (pomFile != null) {
-        BeeXml xmlFile = BeeXml.from(new FileInputStream(pomFile));
+        Pom xmlFile = XmlParser.valueOf(new FileInputStream(pomFile));
         List<String> modules = xmlFile.getModules();
         if (!CollectionUtils.isEmpty(modules)) {
           for (String module : modules) {
@@ -190,7 +235,7 @@ public class MojoProjectDependencyProcessor {
             moduleTargetClassPaths.add(path.toString());
           }
         }
-        BeeParentDependency parent = xmlFile.getParent();
+        PomParentDependency parent = xmlFile.getParent();
         if (parent != null) {
           pomFile = new File(pomFile.getParent() + "/" + parent.getRelativePath());
           forward.append("../");
@@ -198,7 +243,7 @@ public class MojoProjectDependencyProcessor {
           pomFile = null;
         }
       }
-    } catch (IOException | SAXException e) {
+    } catch (IOException e) {
       MojoContexts.getLogger().debug(e);
     }
     return moduleTargetClassPaths;

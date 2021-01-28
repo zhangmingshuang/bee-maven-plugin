@@ -9,13 +9,12 @@ import lombok.ToString;
  *
  * @author zhangmsh
  * @version 1.0.0
- * @date 2020/5/20
+ * @date 2020/6/18
  */
 @Setter
 @Getter
-@ToString
-public class BeeExclusion {
+@ToString(callSuper = true)
+public class PomParentDependency extends PomDependency {
 
-  private String groupId;
-  private String artifactId;
+  private String relativePath = "../pom.xml";
 }
