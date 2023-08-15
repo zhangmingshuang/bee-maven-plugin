@@ -121,7 +121,7 @@
     <dependency>
       <artifactId>maven-core</artifactId>
       <groupId>org.apache.maven</groupId>
-      <version>3.6.3</version>
+      <version>3.8.1</version>
     </dependency>
     <dependency>
       <artifactId>maven-plugin-annotations</artifactId>
